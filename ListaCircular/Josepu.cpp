@@ -113,7 +113,7 @@ int main()
 
    while (scanf("%d %d", &n, &k) != EOF) {
          tail = NULL;
-         for (index = 1; index < count; index++) {
+         for (index = 1; index <= n; index++) {
            tail = InsertCircularList(tail,index);
          }
          printf("%d \n", josephus(tail, k));
