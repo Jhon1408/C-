@@ -23,3 +23,17 @@ key[x] <= key[y]."
 
 La propiedad anterior permite imprimir en orden todas las
 llaves de un arbol binario de busqueda.
+
+
+Cosultar un arbol binario de busqueda.
+#Ver archivo ArbolBinario.cpp, Linea 12 funcion InorderTreeWalk.
+
+Una operacion comun es buscar una llave en un arbol binario de busqueda
+(search), tambien se puede consultar el minimo elemento (minimun), el
+maximo elemento (maximun), el predecesor (predeccessor) y el sucesor
+(successor).
+
+Busqueda:
+La funcion devuelve un puntero al nodo con llave K (si este existe),
+de otro modo retorna null.
+#Ver archivo ArbolBinario.cpp, Linea 20 funcion TreeSearch.

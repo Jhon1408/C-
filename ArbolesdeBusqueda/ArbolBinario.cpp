@@ -16,3 +16,14 @@ void InorderTreeWalk(struct node *x) {
     InorderTreeWalk(x->Right);
   }
 }
+
+struct node *TreeSearch(struct node *x, int k) {
+  if ((x == NULL) || (k == x->key)) {
+    return x;
+  }
+  if(k < x->key) {
+    return TreeSearch(x->Left,k);
+  } else {
+    return TreeSearch(x->Right,k);
+  }
+}
