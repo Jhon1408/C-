@@ -1,0 +1,25 @@
+Árboles binarios de búsqueda
+
+Un árbol binario de busqueda esta organizado,
+como su nombre lo indica, en un arbol binario.
+
+Cada nodo en el arbol tiene dos campos:
+- Key: campo de informacion.
+- Left: puntero al hijo por izquierda.
+- Right: puntero al hijo por derecha.
+- p: puntero al padre.
+
+Si uno de los hijos no existe entonces el puntero
+debe apuntar a NULL.
+
+El nodo raiz es el unico nodo que tiene como padre a NULL,
+Las llaver en un arbol binario de busqueda siempre cumlen
+la propiedad de un arbol binario de búsqueda:
+
+"Sea x un nodo en el arbol binario de busqueda. Si y es un
+nodo en el sub_arbol a la izquierda de x, entonces key[y] < key[x].
+Si y es un nodo en el subarbol a la derecha de x, entonces
+key[x] <= key[y]."
+
+La propiedad anterior permite imprimir en orden todas las
+llaves de un arbol binario de busqueda.
