@@ -152,7 +152,7 @@ int JosephusLottery(struct node *tail, int k) {
 }
 
 int main() {
-  int n, k;
+  int n, k, m;
   while (scanf("%d %d", &n, &k) && ((n != 0) && (k != 0))) {
     m = solver(n, k);
     printf("%d\n", m);
