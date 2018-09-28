@@ -27,3 +27,9 @@ struct node *TreeSearch(struct node *x, int k) {
     return TreeSearch(x->Right,k);
   }
 }
+
+int TreeMinimum(struct node *x) {
+  while (x->left != NULL) {
+    x = x->left;
+  }
+}

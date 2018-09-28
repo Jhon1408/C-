@@ -37,3 +37,9 @@ Busqueda:
 La funcion devuelve un puntero al nodo con llave K (si este existe),
 de otro modo retorna null.
 #Ver archivo ArbolBinario.cpp, Linea 20 funcion TreeSearch.
+
+Minimo y maximo
+Un elemento en un arbol binario de busqueda, cuya llave sea minima,
+siempre se encuentra siguiendo los punteros izquierdos desde la raiz
+hasta que se encuentre un null.
+#Ver archivo ArbolBinario.cpp, Linea 31 funcion TreeMinimum.
