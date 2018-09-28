@@ -48,7 +48,7 @@ struct node *TreeSuccessor(struct node *x) {
   }
   struct node *y;
   y = x->p;
-  while ((y != NULL) && (x == x->Right)) {
+  while ((y != NULL) && (x == y->Right)) {
     x = y;
     y = y->p;
   }
