@@ -32,7 +32,15 @@ void MinHeapify(struct prioridad Q[], int i) {
   if ((l <= heapSize) && (Q[l].Prioridad < Q[i].Prioridad)) {
     least = l;
   } else {
-    least = i;
+    if (((l <= heapSize) && (Q[l].Prioridad == Q[i].Prioridad))) {
+      if (Q[l].tllegada < Q[i].tllegada) {
+        least = l;
+      } else {
+        least = i;
+      }
+    } else {
+      least = i;
+    }
   }
 
   if ((r <= heapSize) && (Q[r].Prioridad < Q[least].Prioridad)) {
