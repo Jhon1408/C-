@@ -1,10 +1,10 @@
 Árboles binarios de búsqueda
 
-Un árbol binario de busqueda esta organizado,
-como su nombre lo indica, en un arbol binario.
+Un árbol binario de búsqueda esta organizado,
+como su nombre lo indica, en un árbol binario.
 
-Cada nodo en el arbol tiene dos campos:
-- Key: campo de informacion.
+Cada nodo en el árbol tiene dos campos:
+- Key: campo de información.
 - Left: puntero al hijo por izquierda.
 - Right: puntero al hijo por derecha.
 - p: puntero al padre.
@@ -12,34 +12,44 @@ Cada nodo en el arbol tiene dos campos:
 Si uno de los hijos no existe entonces el puntero
 debe apuntar a NULL.
 
-El nodo raiz es el unico nodo que tiene como padre a NULL,
-Las llaver en un arbol binario de busqueda siempre cumlen
-la propiedad de un arbol binario de búsqueda:
+El nodo raíz es el único nodo que tiene como padre a NULL,
+Las llaves en un árbol binario de búsqueda siempre cumplen
+la propiedad de un árbol binario de búsqueda:
 
-"Sea x un nodo en el arbol binario de busqueda. Si y es un
-nodo en el sub_arbol a la izquierda de x, entonces key[y] < key[x].
-Si y es un nodo en el subarbol a la derecha de x, entonces
+"Sea x un nodo en el árbol binario de búsqueda. Si y es un
+nodo en el subárbol a la izquierda de x, entonces key[y] < key[x].
+Si y es un nodo en el subárbol a la derecha de x, entonces
 key[x] <= key[y]."
 
 La propiedad anterior permite imprimir en orden todas las
-llaves de un arbol binario de busqueda.
+llaves de un árbol binario de búsqueda.
 
 
-Cosultar un arbol binario de busqueda.
-#Ver archivo ArbolBinario.cpp, Linea 12 funcion InorderTreeWalk.
+Consultar un árbol binario de búsqueda.
+#Ver archivo ArbolBinario.cpp, Línea 12 función InorderTreeWalk.
 
-Una operacion comun es buscar una llave en un arbol binario de busqueda
-(search), tambien se puede consultar el minimo elemento (minimun), el
-maximo elemento (maximun), el predecesor (predeccessor) y el sucesor
+Una operación común es buscar una llave en un árbol binario de búsqueda
+(search), también se puede consultar el mínimo elemento (minimun), el
+máximo elemento (maximun), el predecesor (predeccessor) y el sucesor
 (successor).
 
-Busqueda:
-La funcion devuelve un puntero al nodo con llave K (si este existe),
+Búsqueda:
+La función devuelve un puntero al nodo con llave K (si este existe),
 de otro modo retorna null.
-#Ver archivo ArbolBinario.cpp, Linea 20 funcion TreeSearch.
+#Ver archivo ArbolBinario.cpp, Línea 20 función TreeSearch.
 
-Minimo y maximo
-Un elemento en un arbol binario de busqueda, cuya llave sea minima,
-siempre se encuentra siguiendo los punteros izquierdos desde la raiz
+Mínimo y máximo:
+Un elemento en un árbol binario de búsqueda, cuya llave sea minima,
+siempre se encuentra siguiendo los punteros izquierdos desde la raíz
 hasta que se encuentre un null.
-#Ver archivo ArbolBinario.cpp, Linea 31 funcion TreeMinimum.
+#Ver archivo ArbolBinario.cpp, Línea 31 función TreeMinimum.
+#Ver archivo ArbolBinario.cpp, Línea 38 función TreeMaximun.
+
+Sucesor y predecesor:
+Dado un nodo en un árbol binario de búsqueda, resulta importante
+en algunos casos ser capaz de encontrar su sucesor en el orden
+determinado por el recorrido inorder del árbol. Si todas Las llaves
+son distintas, el sucesor de un nodo x es el nodo con la menor
+llave más grande que key[x]. La estructura de un árbol binario de
+búsqueda permite determinar el sucesor de un nodo sin comparar
+las llaves.

@@ -28,8 +28,29 @@ struct node *TreeSearch(struct node *x, int k) {
   }
 }
 
-int TreeMinimum(struct node *x) {
-  while (x->left != NULL) {
-    x = x->left;
+struct node *TreeMinimum(struct node *x) {
+  while (x->Left != NULL) {
+    x = x->Left;
   }
+  return x;
+}
+
+struct node *TreeMaximun(struct node *x) {
+  while (x->Right != NULL) {
+    x = x->Right;
+  }
+  return x;
+}
+
+struct node *TreeSuccessor(struct node *x) {
+  if (x->Right != NULL) {
+    return TreeMinimum(x->Right);
+  }
+  struct node *y;
+  y = x->p;
+  while ((y != NULL) && (x == x->Right)) {
+    x = y;
+    y = y->p;
+  }
+  return y;
 }
