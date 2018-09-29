@@ -1,4 +1,5 @@
 //Cambio pendejo para probar algo
+//pues si wey no mames
 #include "stdlib.h"
 #include "stdio.h"
 #include "math.h"
