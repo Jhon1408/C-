@@ -6,7 +6,7 @@
 struct node {
   int key;
   struct node *next;
-}
+};
 
 struct node *ENQUEUE(struct node *tail, int element) {
   struct node *newNode;
@@ -54,8 +54,8 @@ int main() {
     } else {
       if (operation == 2) {
         element = DEQUEUE(&tail);
-        if (element != infNegative) {
-          printf("%d", element);
+        if (element != -2147483647) {
+          printf("%d\n", element);
         }
       } else {
         printf("Bad operation, use:\n1: Push\n2: Pop\n");

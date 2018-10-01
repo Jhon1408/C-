@@ -6,7 +6,7 @@
 struct node {
   int key;
   struct node *next;
-}
+};
 
 struct node *Push(struct node *top, int element) {
   struct node *newNode;
@@ -42,7 +42,7 @@ int main() {
     } else {
       if (operacion == 2) {
         element = Pop(&top);
-        if(element != infNegative) {
+        if(element != -2147483647) {
           printf("%d\n", element);
         }
       } else {
