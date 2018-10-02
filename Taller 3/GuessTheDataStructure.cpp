@@ -3,15 +3,13 @@
 #define myinfinite 2147483647
 int heapsize = 0;
 //---------------------------------------------------------------------------------------------
-struct node
-{
+struct node {
     int key;
     struct node *next;
 };
 //---------------------------------------------------------------------------------------------
 //COLAS..
-struct node *ENQUEUE (struct node *tail, int element)
-{
+struct node *ENQUEUE (struct node *tail, int element) {
 	struct node *newnode;
 	newnode = (struct node *) malloc (sizeof(struct node));
 	newnode -> key = element;
@@ -33,9 +31,10 @@ struct node *ENQUEUE (struct node *tail, int element)
 int DEQUEUE(struct node **tail)
 {
 	struct node *temp;
-	int element = myinfinite;
-	if(*tail == NULL)
-		printf("the queue is empty.\n");
+	int element = (myinfinite*-1);
+	if(*tail == NULL) {
+		//nothing
+  }
 	else
 	{
 		if(*tail == (*tail)->next)
@@ -69,7 +68,7 @@ struct node *PUSH (struct node *top, int element)
 int POP (struct node **top)
 {
 	struct node *temp;
-	int element = myinfinite;
+	int element = (myinfinite*-1);
 	if(*top != NULL)
 	{
 		temp = *top;
@@ -77,8 +76,6 @@ int POP (struct node **top)
 		*top = (*top)->next;
 		free(temp);
 	}
-	else
-		printf("%the stack is empty.\n");
 	return element;
 }
 
@@ -123,9 +120,10 @@ int MinPQ_minimun(int Array[])
 int MinPQ_extract(int Array[])
 {
 	long long int min = -1*myinfinite;
-	if( heapsize < 1)
-		printf("heap underflow\n");
-	else
+	if( heapsize < 1) {
+		//nothing
+	}
+  else
 	{
 		min = Array[1];
 		Array[1] = Array[heapsize];
@@ -137,8 +135,8 @@ int MinPQ_extract(int Array[])
 void MinPQ_DecreaseKey (int Array[],int index,int key)
 {
      int temp;
-     if( key > Array[index] )
-         printf(" Warning "" Key new is higher than current key  ");
+     if( key > Array[index] ) {
+     }
      else
          Array[index] = key;
      while ((index > 1) && ((Array[F_parent(index)])> Array[index]))
@@ -157,11 +155,9 @@ void MinPQ_insert(int Array[],int key)
      MinPQ_DecreaseKey(Array,heapsize,key);
 }
 //---------------------------------------------------------------------------------------------------
-int main()
-{
+int main() {
 	int cant_operations;
-	while(scanf("%d",&cant_operations) != EOF)
-	{
+	while(scanf("%d",&cant_operations) != EOF) {
 		int element, operation,cont_stack = 0,cont_queue = 0,cont_PQ = 0,cont = 0;
 		struct node *tail,*top;
     heapsize = 0;
@@ -169,23 +165,16 @@ int main()
 		top = NULL;
 		int array[cant_operations + 5];
 
-		for(int index=1; index <= cant_operations;index++)
-		{
+		for(int index=1; index <= cant_operations;index++) {
 			scanf("%d",&operation);
-
-			if(operation == 1)
-			{
+			if(operation == 1) {
 				scanf("%d",&element);
 				tail = ENQUEUE(tail,element);
 				top = PUSH(top,element);
 				MinPQ_insert(array,(element*-1));
-			}
-			else
-			{
-				if(operation == 2)
-				{
+			} else {
+				if(operation == 2) {
 					scanf("%d",&element);
-
 					int element_stack = POP(&top);
 					int element_queue = DEQUEUE(&tail);
 					int element_priority_queue = MinPQ_extract(array);
@@ -198,8 +187,8 @@ int main()
 						cont_queue++;
 				}
 			}
-
 		}
+
     if ((cont_PQ == cont) && (cont_stack != cont) && (cont_queue != cont)) {
       printf("priority queue\n");
     } else {
@@ -209,18 +198,10 @@ int main()
         if ((cont_queue == cont) && (cont_PQ != cont) && (cont_stack != cont)) {
           printf("queue\n");
         } else {
-          if ((cont_queue == cont) && (cont_PQ == cont) && (cont_stack != cont)) {
+          if ((cont_queue == cont) || (cont_PQ == cont) || (cont_stack == cont)) {
             printf("not sure\n");
           } else {
-            if ((cont_queue == cont) && (cont_PQ != cont) && (cont_stack == cont)) {
-              printf("not sure\n");
-            } else {
-              if ((cont_queue != cont) && (cont_PQ == cont) && (cont_stack == cont)) {
-                printf("not sure\n");
-              } else {
-                printf("impossible\n");
-              }
-            }
+            printf("impossible\n");
           }
         }
       }
