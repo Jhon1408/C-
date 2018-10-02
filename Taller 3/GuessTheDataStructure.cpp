@@ -1,197 +1,231 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
-#define infinite 2147483647;
-#define infNegative -2147483647;
-int heapSize = 0;
-
-struct node {
-  int key;
-  struct node *next;
+#define myinfinite 2147483647
+int heapsize = 0;
+//---------------------------------------------------------------------------------------------
+struct node
+{
+    int key;
+    struct node *next;
 };
+//---------------------------------------------------------------------------------------------
+//COLAS..
+struct node *ENQUEUE (struct node *tail, int element)
+{
+	struct node *newnode;
+	newnode = (struct node *) malloc (sizeof(struct node));
+	newnode -> key = element;
 
-struct node *Push(struct node *top, int element) {
-  struct node *newNode;
-  newNode = (struct node *) malloc(sizeof(struct node));
-  newNode->key = element;
-  newNode->next = top;
-  top = newNode;
-  return top;
+	if(tail == NULL)
+	{
+		newnode->next = newnode;
+		tail = newnode;
+	}
+	else
+	{
+		newnode->next = tail->next;
+		tail->next = newnode;
+		tail = newnode;
+	}
+	return tail;
 }
 
-int Pop(struct node **top) {
-  struct node *q;
-  int element = infNegative;
-  if(*top == NULL)
-    printf("Nope, vacio karnal.\n");
-  else {
-    q = *top;
-    element = q->key;
-    *top = (*top)->next;
-    free(q);
+int DEQUEUE(struct node **tail)
+{
+	struct node *temp;
+	int element = myinfinite;
+	if(*tail == NULL)
+		printf("the queue is empty.\n");
+	else
+	{
+		if(*tail == (*tail)->next)
+		{
+			element = (*tail)->key;
+			free(*tail);
+			*tail=NULL;
+		}
+		else
+		{
+			temp = (*tail)->next;
+			element = temp->key;
+			(*tail)->next = temp->next;
+			free(temp);
+		}
+	}
+	return element;
+}
+//---------------------------------------------------------------------------------------------------
+//PILAS
+struct node *PUSH (struct node *top, int element)
+{
+	struct node *newnode;
+	newnode = (struct node *) malloc (sizeof(struct node));
+	newnode->key=element;
+	newnode->next=top;
+	top=newnode;
+	return top;
+}
+
+int POP (struct node **top)
+{
+	struct node *temp;
+	int element = myinfinite;
+	if(*top != NULL)
+	{
+		temp = *top;
+		element = temp->key;
+		*top = (*top)->next;
+		free(temp);
+	}
+	else
+		printf("%the stack is empty.\n");
+	return element;
+}
+
+//------------------------------------------------------------------------------------------------------
+//COLAS DE PRIORIDAD
+
+int F_parent(int index)
+{
+	return index/2;
+}
+int F_left (int index)
+{
+	return 2*index;
+}
+int F_right(int index)
+{
+	return 2*index+1;
+}
+void MinHeapify(int Array[],int index)
+{
+	int left, right,least, temp;
+	left = F_left(index);
+	right = F_right(index);
+	if((left <= heapsize) && (Array[left] < Array[index]))
+		least = left;
+	else
+		least = index;
+	if((right <= heapsize) && (Array[right]<Array[least]))
+		least = right;
+	if(least != index)
+	{
+		temp = Array[index];
+		Array[index] = Array[least];
+		Array[least] = temp;
+		MinHeapify(Array,least);
+	}
+}
+int MinPQ_minimun(int Array[])
+{
+	return Array[1];
+}
+int MinPQ_extract(int Array[])
+{
+	long long int min = -1*myinfinite;
+	if( heapsize < 1)
+		printf("heap underflow\n");
+	else
+	{
+		min = Array[1];
+		Array[1] = Array[heapsize];
+		heapsize = heapsize - 1;
+		MinHeapify(Array,1);
   }
-  return element;
+	return min;
 }
+void MinPQ_DecreaseKey (int Array[],int index,int key)
+{
+     int temp;
+     if( key > Array[index] )
+         printf(" Warning "" Key new is higher than current key  ");
+     else
+         Array[index] = key;
+     while ((index > 1) && ((Array[F_parent(index)])> Array[index]))
+     {
+          temp = Array[index];
+          Array[index] = Array[F_parent(index)];
+          Array[F_parent(index)] = temp;
+          index = F_parent(index);
+     }
 
-struct node *ENQUEUE(struct node *tail, int element) {
-  struct node *newNode;
-  newNode = (struct node *) malloc(sizeof(struct node));
-  newNode->key = element;
-  if (tail == NULL) {
-    newNode->next = newNode;
-    tail = newNode;
-  } else {
-    newNode->next = tail->next;
-    tail->next = newNode;
-    tail = newNode;
-  }
-  return tail;
 }
+void MinPQ_insert(int Array[],int key)
+{
+     heapsize = heapsize+1;
+     Array[heapsize]= (myinfinite);
+     MinPQ_DecreaseKey(Array,heapsize,key);
+}
+//---------------------------------------------------------------------------------------------------
+int main()
+{
+	int cant_operations;
+	while(scanf("%d",&cant_operations) != EOF)
+	{
+		int element, operation,cont_stack = 0,cont_queue = 0,cont_PQ = 0,cont = 0;
+		struct node *tail,*top;
+    heapsize = 0;
+		tail=NULL;
+		top = NULL;
+		int array[cant_operations + 5];
 
-int DEQUEUE(struct node **tail) {
-  struct node *q;
-  int element = infNegative;
-  if (*tail == NULL) {
-    printf("Nope, lista vacia.\n");
-  } else {
-    if (*tail == (*tail)->next) {
-      element = (*tail)->key;
-      free(*tail);
-      *tail == NULL;
+		for(int index=1; index <= cant_operations;index++)
+		{
+			scanf("%d",&operation);
+
+			if(operation == 1)
+			{
+				scanf("%d",&element);
+				tail = ENQUEUE(tail,element);
+				top = PUSH(top,element);
+				MinPQ_insert(array,(element*-1));
+			}
+			else
+			{
+				if(operation == 2)
+				{
+					scanf("%d",&element);
+
+					int element_stack = POP(&top);
+					int element_queue = DEQUEUE(&tail);
+					int element_priority_queue = MinPQ_extract(array);
+          cont++;
+					if(element_priority_queue == (element*-1))
+						cont_PQ++;
+					if(element_stack == element)
+						cont_stack++;
+					if(element_queue == element)
+						cont_queue++;
+				}
+			}
+
+		}
+    if ((cont_PQ == cont) && (cont_stack != cont) && (cont_queue != cont)) {
+      printf("priority queue\n");
     } else {
-      q = (*tail)->next;
-      element = q->key;
-      (*tail)->next = q->next;
-      free(q);
-    }
-  }
-  return element;
-}
-
-int Parent(int i) {
-  return (int) floor(i/2);
-}
-
-int Left(int i) {
-    return (2 * i);
-}
-
-int Right(int i) {
-  return ((2 * i) + 1);
-}
-
-void MinHeapify(int Q[], int i) {
-  int l = Left(i);
-  int r = Right(i);
-  int least;
-
-  if ((l <= heapSize) && (Q[l] < Q[i])) {
-    least = l;
-  } else {
-    least = i;
-  }
-
-  if ((r <= heapSize) && (Q[r] < Q[least])) {
-    least = r;
-  }
-
-  if (least != i) {
-    int temp = Q[i];
-    Q[i] = Q[least];
-    Q[least] = temp;
-    MinHeapify(Q, least);
-  }
-}
-
-int MinPQ_Minimum(int Q[]) {
-  return Q[1];
-}
-
-int MinPQ_Extract(int Q[]) {
-  int min = 0;
-  if(heapSize < 1) {
-    printf("Error (Heap underflow!)\n");
-  } else {
-    min = Q[1];
-    Q[1] = Q[heapSize];
-    heapSize = heapSize - 1;
-    MinHeapify(Q, 1);
-  }
-  return min;
-}
-
-void MinPQ_DecreaseKey(int Q[], int i, int key) {
-  if (key > Q[i]) {
-    printf("Error (New key is higher than current key)");
-  } else {
-    Q[i] = key;
-    int temp;
-    while ((i > 1) && (Q[Parent(i)] > Q[i])) {
-      temp = Q[i];
-      Q[i] = Q[Parent(i)];
-      Q[Parent(i)] = temp;
-      i = Parent(i);
-    }
-  }
-}
-
-void MinPQ_Insert(int Q[], int key) {
-  heapSize = heapSize + 1;
-  Q[heapSize] = infinite;
-  MinPQ_DecreaseKey(Q, heapSize, key);
-}
-
-int main() {
-  int n;
-  while (scanf("%d", &n) != EOF) {
-    struct node *top, *tail;
-    int flagPilas = 1, flagColas = 1, flagPrioridad = 1, k, operation, Q[10005];
-    heapSize = 0;
-    for (int i = 1; i <= n; i++) {
-      scanf("%d", &operation);
-      if (operation == 1) {
-        scanf("%d", &k);
-        MinPQ_Insert(Q, k);
-        top = Push(top, k);
-        tail = ENQUEUE(tail, k);
+      if ((cont_stack == cont) && (cont_PQ != cont) && (cont_queue != cont)) {
+        printf("stack\n");
       } else {
-        if (operation == 2) {
-          scanf("%d", &k);
-          if (MinPQ_Extract(Q) != k) {
-            flagPrioridad = 0;
-          }
-          if (Pop(&top) != k) {
-            flagPilas = 0;
-          }
-          if (DEQUEUE(&tail) != k) {
-            flagColas = 0;
+        if ((cont_queue == cont) && (cont_PQ != cont) && (cont_stack != cont)) {
+          printf("queue\n");
+        } else {
+          if ((cont_queue == cont) && (cont_PQ == cont) && (cont_stack != cont)) {
+            printf("not sure\n");
+          } else {
+            if ((cont_queue == cont) && (cont_PQ != cont) && (cont_stack == cont)) {
+              printf("not sure\n");
+            } else {
+              if ((cont_queue != cont) && (cont_PQ == cont) && (cont_stack == cont)) {
+                printf("not sure\n");
+              } else {
+                printf("impossible\n");
+              }
+            }
           }
         }
       }
     }
-    int sum = flagPrioridad + flagPilas + flagColas;
-    switch (sum) {
-      case (0):
-        printf("impossible\n");
-        break;
-      case (3):
-        printf("impossible\n");
-        break;
-      case (2):
-        printf("not sure\n");
-        break;
-      case (1):
-        if (flagPrioridad == 1) {
-          printf("priority queue\n");
-        } else {
-          if (flagPilas == 1) {
-            printf("stack\n");
-          } else {
-            printf("queue\n");
-          }
-        }
-        break;
-    }
-  }
-  return 0;
+
+	}
+	return 0;
 }
