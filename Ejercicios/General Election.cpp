@@ -20,7 +20,7 @@ int main() {
     scanf("%d" "%d",&c,&r);
     for (int i = 0; i < r; i++) {
       for (int j = 0; j < c; j++) {
-        cin >> v[i][j];
+        scanf("%d", &v[i][j]);
       }
     }
     int result, max = -1, winner = -1;
@@ -32,12 +32,9 @@ int main() {
       if(result > max) {
         max = result;
         winner = i+1;
-      }
+      }    
     }
-    winners[i] = winner;
-  }
-  for (int i = 0; i < t; i++) {
-    cout << winners[i] << '\n';
+    printf("%d\n", winner);
   }
   return 0;
 }

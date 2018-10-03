@@ -1,0 +1,17 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+int main() {
+  int n;
+  unsigned long long int value;
+  scanf("%d", &n);
+  for (int i = 1; i <= n; i++) {
+    scanf("%lluf", &value);
+    if (value % 5 == 0) {
+      printf("YES\n");
+    } else {
+      printf("NO\n");
+    }
+  }
+  return 0;
+}
