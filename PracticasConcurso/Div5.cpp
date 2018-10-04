@@ -3,10 +3,10 @@
 
 int main() {
   int n;
-  unsigned long long int value;
+  int value;
   scanf("%d", &n);
   for (int i = 1; i <= n; i++) {
-    scanf("%lluf", &value);
+    scanf("%d", &value);
     if (value % 5 == 0) {
       printf("YES\n");
     } else {
