@@ -36,14 +36,14 @@ void MinHeapify(struct prioridad Q[], int i) {
   }
 
   if ((l <= heapSize) && (Q[l].totalTime == Q[i].totalTime)) {
-    if (Q[l].type < Q[i].type) {
+    if (Q[l].inTime < Q[i].inTime) {
       least = l;
     } else {
       least = i;
     }
 
-    if(Q[l].type == Q[i].type) {
-      if(Q[l].inTime < Q[i].inTime) {
+    if(Q[l].inTime == Q[i].inTime) {
+      if(Q[l].type < Q[i].type) {
         least = l;
       } else {
         least = i;
@@ -56,12 +56,12 @@ void MinHeapify(struct prioridad Q[], int i) {
   }
 
   if ((r <= heapSize) && (Q[r].totalTime == Q[least].totalTime)) {
-    if (Q[r].type < Q[least].type) {
+    if (Q[r].inTime < Q[least].inTime) {
       least = r;
     }
 
-    if(Q[r].type == Q[least].type) {
-      if(Q[r].inTime < Q[least].inTime) {
+    if(Q[r].inTime == Q[least].inTime) {
+      if(Q[r].type < Q[least].type) {
         least = r;
       }
     }
@@ -128,7 +128,6 @@ int main() {
   int n, r, tstart, troute, type, drop, walk, totalTime;
   char name[20];
   scanf("%d",&n);
-
   for(int i = 1; i <= n; i++) {
     heapSize = 0;
     scanf("%d %d", &r, &tstart);
@@ -156,6 +155,5 @@ int main() {
     q = MinPQ_Extract(Q);
     printf("(%d): %s takes %d minutes, Harry reach hes home at %d:%02dpm.\n",i, q.name, q.totalTime, hours(q.totalTime+tstart), minutes(q.totalTime+tstart));
   }
-
   return 0;
 }
