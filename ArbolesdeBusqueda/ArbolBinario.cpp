@@ -153,7 +153,7 @@ int main() {
           printf("[NULL] ");
           InorderTreeWalk(T);
         } else {
-          printf("Error: The value doesn't exist.");
+          printf("Error: The value %d doesn't exist.", element);
         }
         printf("\n");
       } else {
