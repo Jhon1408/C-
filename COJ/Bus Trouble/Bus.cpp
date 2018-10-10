@@ -10,6 +10,7 @@ struct prioridad {
   int totalTime;
   int type;
   int inTime;
+  int walkTime = 0;
 };
 
 int Parent(int i) {
@@ -135,22 +136,25 @@ int main() {
     for(int i = 1; i <= r; i++) {
       struct prioridad p;
       scanf("%s %d %d", name, &troute, &type);
-      //Insert in the structure
-      strcpy(p.name,name);
-      p.inTime = troute;
-      p.type = type;
-      if(type == 1) {
-        scanf("%d", &drop);
-        totalTime = (troute - tstart) + drop;
-        p.totalTime = totalTime;
-      } else {
-        if(type == 2) {
-          scanf("%d %d", &drop, &walk);
-          totalTime = (troute - tstart) + drop + walk;
+      if(troute >= tstart) {
+        //Insert in the structure
+        strcpy(p.name,name);
+        p.inTime = troute;
+        p.type = type;
+        if(type == 1) {
+          scanf("%d", &drop);
+          totalTime = (troute - tstart) + drop;
           p.totalTime = totalTime;
+        } else {
+          if(type == 2) {
+            scanf("%d %d", &drop, &walk);
+            totalTime = (troute - tstart) + drop + walk;
+            p.totalTime = totalTime;
+            p.walkTime = walk;
+          }
         }
+        MinPQ_Insert(Q,p);
       }
-      MinPQ_Insert(Q,p);
     }
     q = MinPQ_Extract(Q);
     printf("(%d): %s takes %d minutes, Harry reach hes home at %d:%02dpm.\n",i, q.name, q.totalTime, hours(q.totalTime+tstart), minutes(q.totalTime+tstart));
