@@ -14,19 +14,20 @@ struct nodeTree {
 void InorderTreeWalk(struct nodeTree *x) {
   if(x != NULL) {
     InorderTreeWalk(x->Left);
-    printf("[%s] ", x->name);
+    printf("[%s]: %d\n", x->name, x->money);
     InorderTreeWalk(x->Right);
   }
 }
 
 struct nodeTree *TreeSearch(struct nodeTree *x, char k[]) {
-  if ((x == NULL) || (k == x->name)) {
-    return x;
-  }
-  if(k < x->name) {
-    return TreeSearch(x->Left,k);
+  if(x != NULL) {
+    if (strcmp(k,x->name) == 0) {
+      return x;
+    }
+    TreeSearch(x->Left,k);
+    TreeSearch(x->Right,k);
   } else {
-    return TreeSearch(x->Right,k);
+    return x;
   }
 }
 
@@ -138,6 +139,25 @@ struct nodeTree *TreeDelete(struct nodeTree *T, struct nodeTree *z) {
 }
 
 int main() {
-    
+    struct nodeTree *T, *node;
+    T = NULL;
+    temp = NULL;
+    char name[20], temp[20];
+    int list, parragraphs, money, totalmoney;
+    scanf("%d %d", &list, &parragraphs);
+    for(int i = 1; i <= list; i++) {
+      scanf("%s %d", name, money);
+      T = TreeInsert(T,name,money);
+    }
+    for(int i = 1; i <= parragraphs; i++) {
+      totalmoney = 0;
+      while(scanf("%s", &temp) != '\n.') {
+        node = TreeSearch(T,temp);
+        if(node != NULL) {
+          totalmoney = totalmoney + node->money;
+        }
+      }
+      printf("%d\n", totalmoney);
+    }
     return 0;
 }
