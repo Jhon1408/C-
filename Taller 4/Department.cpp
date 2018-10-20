@@ -1,11 +1,10 @@
-#include "stdlib.h"
-#include "stdio.h"
-#include "math.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 
 struct nodeTree {
-  unsigned long long key;
-  unsigned long long times;
-  unsigned long long value;
+  int key;
+  int times;
   struct nodeTree *Left;
   struct nodeTree *Right;
   struct nodeTree *p;
@@ -14,16 +13,16 @@ struct nodeTree {
 void InorderTreeWalk(struct nodeTree *x) {
   if(x != NULL) {
     InorderTreeWalk(x->Left);
-    printf("%d %d\n", x->value, x->times);
+    printf("%d %d\n", x->key, x->times);
     InorderTreeWalk(x->Right);
   }
 }
 
 struct nodeTree *TreeSearch(struct nodeTree *x, int k) {
-  if ((x == NULL) || (k == x->value)) {
+  if ((x == NULL) || (k == x->key)) {
     return x;
   }
-  if(k < x->value) {
+  if(k < x->key) {
     return TreeSearch(x->Left,k);
   } else {
     return TreeSearch(x->Right,k);
@@ -70,11 +69,10 @@ struct nodeTree *TreePredeccessor(struct nodeTree *x) {
   return y;
 }
 
-struct nodeTree *TreeInsert(struct nodeTree *T, int k, int val) {
+struct nodeTree *TreeInsert(struct nodeTree *T, int k) {
   struct nodeTree *x, *y, *z;
   z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
   z->key = k;
-  z->value = val;
   z->times = 1;
   z->Left = NULL;
   z->Right = NULL;
@@ -83,7 +81,7 @@ struct nodeTree *TreeInsert(struct nodeTree *T, int k, int val) {
 
   while (x != NULL) {
     y = x;
-    if (z->value < x->value) {
+    if (z->key < x->key) {
       x = x->Left;
     } else {
       x = x->Right;
@@ -94,7 +92,7 @@ struct nodeTree *TreeInsert(struct nodeTree *T, int k, int val) {
   if (y == NULL) {
     T = z;
   } else {
-    if (z->value < y->value) {
+    if (z->key < y->key) {
       y->Left = z;
     } else {
       y->Right = z;
@@ -131,6 +129,7 @@ struct nodeTree *TreeDelete(struct nodeTree *T, struct nodeTree *z) {
   }
   if (y != z) {
     z->key = y->key;
+    z->times = y->times;
     //Campos de informacion.
   }
   free(y);
@@ -138,19 +137,22 @@ struct nodeTree *TreeDelete(struct nodeTree *T, struct nodeTree *z) {
 }
 
 int main() {
-  struct nodeTree *T, *temp;
-  unsigned long long val, order = 1;
+  struct nodeTree *T, *z;
+  int val, order = 0, Q[100000], size_array;
   T = NULL;
   while(scanf("%d", &val) != EOF) {
     if(TreeSearch(T, val) != NULL) {
-      printf("Encontrado (%d).\n", val);
       TreeSearch(T, val)->times++;
     } else {
-      T = TreeInsert(T, order, val);
-      printf("Insertado (%d).\n", val);
       order++;
+      T = TreeInsert(T, val);
+      Q[order] = val;
     }
   }
-  InorderTreeWalk(T);
+  size_array = order;
+  for(order = 1; order <= size_array; order++) {
+    z = TreeSearch(T, Q[order]);
+    printf("%d %d\n", z->key, z->times);
+  }
   return 0;
 }

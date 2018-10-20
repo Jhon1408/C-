@@ -5,7 +5,7 @@
 #include "math.h"
 
 struct nodeTree {
-  unsigned long long key;
+  int key;
   struct nodeTree *Left;
   struct nodeTree *Right;
   struct nodeTree *p;
@@ -19,7 +19,7 @@ void InorderTreeWalk(struct nodeTree *x) {
   }
 }
 
-struct nodeTree *TreeSearch(struct nodeTree *x, unsigned long long k) {
+struct nodeTree *TreeSearch(struct nodeTree *x, int k) {
   if ((x == NULL) || (k == x->key)) {
     return x;
   }
@@ -70,7 +70,7 @@ struct nodeTree *TreePredeccessor(struct nodeTree *x) {
   return y;
 }
 
-struct nodeTree *TreeInsert(struct nodeTree *T, unsigned long long k) {
+struct nodeTree *TreeInsert(struct nodeTree *T, int k) {
   struct nodeTree *x, *y, *z;
   z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
   z->key = k;
@@ -136,40 +136,52 @@ struct nodeTree *TreeDelete(struct nodeTree *T, struct nodeTree *z) {
 }
 
 int main() {
-  unsigned long long ladys, chimp, cases;
-  struct nodeTree *T;
+  int ladys, chimp, cases, height;
+  struct nodeTree *T, *z, *succ, *pred;
   T = NULL;
-  scanf("%llu", &ladys);
+  scanf("%d", &ladys);
   for (int i = 1; i <= ladys; i++) {
-    scanf("%llu", &chimp);
-    T = TreeInsert(T, chimp);
+    scanf("%d", &chimp);
+    z = TreeSearch(T, chimp);
+    if(z == NULL)
+        T = TreeInsert(T, chimp);
   }
-  scanf("%llu", &cases);
+  scanf("%d", &cases);
   for (int i = 1; i <= cases; i++) {
-    unsigned long long small = 0, tall = 0, height;
-    struct nodeTree *temp, *search;
-    temp = NULL;
-    search = NULL;
-    scanf("%llu", &height);
-    temp = TreeMinimum(T);
-    while (temp != NULL && temp->key < height) {
-      small = temp->key;
-      temp = TreeSuccessor(temp);
+    scanf("%d", &height);
+    z = TreeSearch(T, height);
+    if (z != NULL) {
+      pred = TreePredeccessor(z);
+      succ = TreeSuccessor(z);
+      if (pred == NULL) {
+        if (succ == NULL)
+          printf("X X\n");
+        else
+          printf("X %d\n", succ->key);
+      } else {
+        if (succ == NULL)
+          printf("%d X\n", pred->key);
+        else
+          printf("%d %d\n", pred->key, succ->key);
+      }
+    } else {
+      T = TreeInsert(T, height);
+      z = TreeSearch(T, height);
+      pred = TreePredeccessor(z);
+      succ = TreeSuccessor(z);
+      if (pred == NULL) {
+        if (succ == NULL)
+          printf("X X\n");
+        else
+          printf("X %d\n", succ->key);
+      } else {
+        if (succ == NULL)
+          printf("%d X\n", pred->key);
+        else
+          printf("%d %d\n", pred->key, succ->key);
+      }
+      T = TreeDelete(T, z);
     }
-    temp = TreeMaximum(T);
-    while (temp != NULL && temp->key > height) {
-      tall = temp->key;
-      temp = TreePredeccessor(temp);
-    }
-    if (small > 0)
-      printf("%llu ", small);
-    else
-      printf("X ");
-
-    if (tall > 0)
-      printf("%llu\n", tall);
-    else
-      printf("X\n");
   }
   return 0;
 }

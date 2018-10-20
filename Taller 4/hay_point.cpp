@@ -1,11 +1,11 @@
-#include "stdlib.h"
-#include "stdio.h"
-#include "math.h"
-#include "string.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
 
 struct nodeTree {
   int money;
-  char name[20];
+  char key[20];
   struct nodeTree *Left;
   struct nodeTree *Right;
   struct nodeTree *p;
@@ -14,7 +14,7 @@ struct nodeTree {
 void InorderTreeWalk(struct nodeTree *x) {
   if(x != NULL) {
     InorderTreeWalk(x->Left);
-    printf("[%s]: %d ", x->name, x->money);
+    printf("[%s]: %d\n", x->key, x->money);
     InorderTreeWalk(x->Right);
   }
 }
@@ -60,19 +60,20 @@ struct nodeTree *TreePredeccessor(struct nodeTree *x) {
 }
 
 struct nodeTree *TreeSearch(struct nodeTree *x, char k[]) {
-  if(x != NULL) {
-    if (strcmp(x->name, k) == 0) {
-      return x;
-    }
-    TreeSearch(x->Right,k);
-    TreeSearch(x->Left,k);
+  if ((x == NULL) || (strcmp(k, x->key) == 0)) {
+    return x;
+  }
+  if(strcmp(k,x->key) < 0)  {
+    return TreeSearch(x->Left,k);
+  } else {
+    return TreeSearch(x->Right,k);
   }
 }
 
 struct nodeTree *TreeInsert(struct nodeTree *T, char k[], int val) {
   struct nodeTree *x, *y, *z;
   z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
-  strcpy(z->name, k);
+  strcpy(z->key, k);
   z->money = val;
   z->Left = NULL;
   z->Right = NULL;
@@ -81,7 +82,7 @@ struct nodeTree *TreeInsert(struct nodeTree *T, char k[], int val) {
 
   while (x != NULL) {
     y = x;
-    if (z->money < x->money) {
+    if (strcmp(z->key,x->key) < 0) {
       x = x->Left;
     } else {
       x = x->Right;
@@ -92,7 +93,7 @@ struct nodeTree *TreeInsert(struct nodeTree *T, char k[], int val) {
   if (y == NULL) {
     T = z;
   } else {
-    if (z->money < y->money) {
+    if (strcmp(z->key, y->key) < 0) {
       y->Left = z;
     } else {
       y->Right = z;
@@ -128,7 +129,7 @@ struct nodeTree *TreeDelete(struct nodeTree *T, struct nodeTree *z) {
     }
   }
   if (y != z) {
-    strcpy(y->name, z->name);
+    strcpy(y->key, z->key);
     z->money = z->money;
     //Campos de informacion.
   }
@@ -140,19 +141,18 @@ int main() {
     struct nodeTree *T, *node;
     T = NULL;
     node = NULL;
-    char name[20], temp[20];
+    char key[20], temp[20];
     int list, parragraphs, money, totalmoney;
     scanf("%d %d", &list, &parragraphs);
     for(int i = 1; i <= list; i++) {
-      scanf("%s %d", name, &money);
-      T = TreeInsert(T,name,money);
+      scanf("%s %d", key, &money);
+      T = TreeInsert(T,key,money);
     }
     for(int i = 1; i <= parragraphs; i++) {
       totalmoney = 0;
       while((scanf("%s", &temp)) && (strcmp(temp,".") != 0)) {
         node = TreeSearch(T,temp);
         if(node != NULL) {
-          printf("Encontre: %s Valor: %d\n", node->name, node->money);
           totalmoney = totalmoney + node->money;
         }
       }
