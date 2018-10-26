@@ -206,9 +206,6 @@ struct nodeTree *RBTreeInsert(struct nodeTree *T, int element) {
 			y->Right = z;
 		}
 	}
-	z->Left->p = z;
-	z->Right->p = z;
-	z->color = RED;
 	return RBTreeInsertFIXUP(T, z);
 }
 //-----------------------------------------------------------------------------//
