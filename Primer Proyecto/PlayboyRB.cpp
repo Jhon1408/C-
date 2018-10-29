@@ -4,6 +4,7 @@
 #define RED 1
 #define BLACK 0
 #define NIL 2147483647
+
 //-----------------------------------------------------------------------------//
 struct nodeTree {
   int key;
@@ -15,66 +16,22 @@ struct nodeTree {
 //-----------------------------------------------------------------------------//
 struct nodeTree *AssignNIL() {
   struct nodeTree *z;
-  z=(struct nodeTree *) malloc(sizeof(struct nodeTree));
-  z->p=NULL;
-  z->Right=NULL;
-  z->Left=NULL;
-  z->key=NIL;
+  z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
+  z->p = NULL;
+  z->Right = NULL;
+  z->Left = NULL;
   z->color = BLACK;
+  z->key = NIL;
   return z;
-}
-//-----------------------------------------------------------------------------//
-struct nodeTree *RBTreeLeftRotate(struct nodeTree *T, struct nodeTree *x) {
-  struct nodeTree *y, *px, *py;
-  y = x->Right;
-  x->Right = y->Left;
-  if(x->Left->key != NIL) {
-    y->Left->p = x;
-  }
-  y->p = x->p;
-  if(x->p->key == NIL) {
-    T = y;
-  } else {
-    if(x == x->p->Left) {
-      x->p->Left = y;
-    } else {
-      x->p->Right = y;
-    }
-  }
-  y->Left = x;
-  x->p = y;
-  return T;
-}
-//-----------------------------------------------------------------------------//
-struct nodeTree *RBTreeRightRotate(struct nodeTree *T, struct nodeTree *x) {
-  struct nodeTree *y, *px, *py;
-  y = x->Left;
-  x->Left = y->Right;
-  if(x->Right->key != NIL) {
-    y->Right->p = x;
-  }
-  y->p = x->p;
-  if(x->p->key == NIL) {
-    T = y;
-  } else {
-    if(x == x->p->Right) {
-      x->p->Right = y;
-    } else {
-      x->p->Left = y;
-    }
-  }
-  y->Right = x;
-  x->p = y;
-  return T;
 }
 //-----------------------------------------------------------------------------//
 void RBInorderTreeWalk(struct nodeTree *x) {
   if(x->key != NIL) {
     RBInorderTreeWalk(x->Left);
     if(x->color == RED)
-      printf("[%d | RED] ", x->key);
+      printf("[%d|R] ", x->key);
     else
-      printf("[%d | BLACK] ", x->key);
+      printf("[%d|B] ", x->key);
     RBInorderTreeWalk(x->Right);
   }
 }
@@ -104,6 +61,19 @@ struct nodeTree *RBTreeMaximun(struct nodeTree *x) {
   return x;
 }
 //-----------------------------------------------------------------------------//
+struct nodeTree *RBTreePredecessor(struct nodeTree *x) {
+  struct nodeTree *y;
+  if (x->Left->key != NIL) {
+    return RBTreeMaximun(x->Left);
+  }
+  y = x->p;
+  while ((y->key != NIL) && (x == y->Left)) {
+    x = y;
+    y = y->p;
+  }
+  return y;
+}
+//-----------------------------------------------------------------------------//
 struct nodeTree *RBTreeSuccessor(struct nodeTree *x) {
   if (x->Right->key != NIL) {
     return RBTreeMinimum(x->Right);
@@ -117,17 +87,48 @@ struct nodeTree *RBTreeSuccessor(struct nodeTree *x) {
   return y;
 }
 //-----------------------------------------------------------------------------//
-struct nodeTree *RBTreePredeccessor(struct nodeTree *x) {
-  if (x->Left->key != NIL) {
-    return RBTreeMinimum(x->Left);
-  }
+struct nodeTree *RBTreeLeftRotate(struct nodeTree *T, struct nodeTree *x) {
   struct nodeTree *y;
-  y = x->p;
-  while ((y->key != NIL) && (x == y->Left)) {
-    x = y;
-    y = y->p;
+  y = x->Right;
+  x->Right = y->Left;
+  if(x->Left->key != NIL) {
+    y->Left->p = x;
   }
-  return y;
+  y->p = x->p;
+  if(x->p->key == NIL) {
+    T = y;
+  } else {
+    if(x == x->p->Left) {
+      x->p->Left = y;
+    } else {
+      x->p->Right = y;
+    }
+  }
+  y->Left = x;
+  x->p = y;
+  return T;
+}
+//-----------------------------------------------------------------------------//
+struct nodeTree *RBTreeRightRotate(struct nodeTree *T, struct nodeTree *x) {
+  struct nodeTree *y;
+  y = x->Left;
+  x->Left = y->Right;
+  if(x->Right->key != NIL) {
+    y->Right->p = x;
+  }
+  y->p = x->p;
+  if(x->p->key == NIL) {
+    T = y;
+  } else {
+    if(x == x->p->Right) {
+      x->p->Right = y;
+    } else {
+      x->p->Left = y;
+    }
+  }
+  y->Right = x;
+  x->p = y;
+  return T;
 }
 //-----------------------------------------------------------------------------//
 struct nodeTree *RBTreeInsertFIXUP(struct nodeTree *T, struct nodeTree *z) {
@@ -175,6 +176,11 @@ struct nodeTree *RBTreeInsert(struct nodeTree *T, int element) {
 	struct nodeTree *x, *y, *z;
   z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
   z->key = element;
+  z->color = RED;
+  z->Left = AssignNIL();
+  z->Left->p = z;
+  z->Right = AssignNIL();
+  z->Right->p = z;
 	if(T->key != NIL) {
     y = T->p;
   } else {
@@ -193,19 +199,13 @@ struct nodeTree *RBTreeInsert(struct nodeTree *T, int element) {
 	if(y->key == NIL) {
 		T = z;
 	} else {
+    free(x);
 		if(z->key < y->key) {
-			free(y->Left);
 			y->Left = z;
 		} else {
-			free(y->Right);
 			y->Right = z;
 		}
 	}
-	z->Left = AssignNIL();
-	z->Left->p = z;
-	z->Right = AssignNIL();
-	z->Right->p = z;
-	z->color = RED;
 	return RBTreeInsertFIXUP(T, z);
 }
 //-----------------------------------------------------------------------------//
@@ -325,7 +325,7 @@ int main() {
     scanf("%d", &height);
     z = RBTreeSearch(T, height);
     if (z->key != NIL) {
-      pred = RBTreePredeccessor(z);
+      pred = RBTreePredecessor(z);
       succ = RBTreeSuccessor(z);
       if (pred->key == NIL) {
         if (succ->key == NIL)
@@ -341,7 +341,7 @@ int main() {
     } else {
       T = RBTreeInsert(T, height);
       z = RBTreeSearch(T, height);
-      pred = RBTreePredeccessor(z);
+      pred = RBTreePredecessor(z);
       succ = RBTreeSuccessor(z);
       if (pred->key == NIL) {
         if (succ->key == NIL)

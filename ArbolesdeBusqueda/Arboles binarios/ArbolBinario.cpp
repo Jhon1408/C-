@@ -37,7 +37,7 @@ struct nodeTree *TreeMinimum(struct nodeTree *x) {
   return x;
 }
 
-struct nodeTree *TreeMaximun(struct nodeTree *x) {
+struct nodeTree *TreeMaximum(struct nodeTree *x) {
   while (x->Right != NULL) {
     x = x->Right;
   }
@@ -59,7 +59,7 @@ struct nodeTree *TreeSuccessor(struct nodeTree *x) {
 
 struct nodeTree *TreePredeccessor(struct nodeTree *x) {
   if (x->Left != NULL) {
-    return TreeMinimum(x->Left);
+    return TreeMaximum(x->Left);
   }
   struct nodeTree *y;
   y = x->p;
