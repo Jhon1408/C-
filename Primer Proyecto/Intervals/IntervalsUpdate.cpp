@@ -7,9 +7,10 @@
 
 //-----------------------------------------------------------------------------//
 struct nodeTree {
+  int cant;
+  int frecuencia;
   int key;
   int color;
-  int freq;
   struct nodeTree *Left;
   struct nodeTree *Right;
   struct nodeTree *p;
@@ -17,13 +18,59 @@ struct nodeTree {
 //-----------------------------------------------------------------------------//
 struct nodeTree *AssignNIL() {
   struct nodeTree *z;
-  z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
-  z->key = NIL;
+  z=(struct nodeTree *) malloc(sizeof(struct nodeTree));
+  z->p=NULL;
+  z->Right=NULL;
+  z->Left=NULL;
+  z->key=NIL;
   z->color = BLACK;
-  z->p = NULL;
-  z->Left = NULL;
-  z->Right = NULL;
   return z;
+}
+//-----------------------------------------------------------------------------//
+struct nodeTree *RBTreeLeftRotate(struct nodeTree *T, struct nodeTree *x) {
+  struct nodeTree *y;
+  y = x->Right;
+  x->Right = y->Left;
+  y->Left->p = x;
+  y->p = x->p;
+  if(x->p->key == NIL) {
+    T = y;
+  }
+  else{
+    if(x == x->p->Left) {
+      x->p->Left = y;
+    }
+    else{
+      x->p->Right = y;
+    }
+  }
+  y->Left = x;
+  x->p = y;
+  //printf("Rote a la izquierda.\n");
+  return T;
+}
+//-----------------------------------------------------------------------------//
+struct nodeTree *RBTreeRightRotate(struct nodeTree *T, struct nodeTree *x) {
+  struct nodeTree *y;
+  y = x->Left;
+  x->Left = y->Right;
+  y->Right->p = x;
+  y->p = x->p;
+  if(x->p->key == NIL) {
+    T = y;
+  }
+  else{
+    if(x == x->p->Right) {
+      x->p->Right = y;
+    }
+    else{
+      x->p->Left = y;
+    }
+  }
+  y->Right = x;
+  x->p = y;
+  //printf("Rote a la derecha.\n");
+  return T;
 }
 //-----------------------------------------------------------------------------//
 void RBInorderTreeWalk(struct nodeTree *x) {
@@ -48,50 +95,6 @@ struct nodeTree *RBTreeSearch(struct nodeTree *x, int k) {
   }
 }
 //-----------------------------------------------------------------------------//
-struct nodeTree *RBTreeLeftRotate(struct nodeTree *T, struct nodeTree *x) {
-  struct nodeTree *y;
-  y = x->Right;
-  x->Right = y->Left;
-  if(x->Left->key != NIL) {
-    y->Left->p = x;
-  }
-  y->p = x->p;
-  if(x->p->key == NIL) {
-    T = y;
-  } else {
-    if(x == x->p->Left) {
-      x->p->Left = y;
-    } else {
-      x->p->Right = y;
-    }
-  }
-  y->Left = x;
-  x->p = y;
-  return T;
-}
-//-----------------------------------------------------------------------------//
-struct nodeTree *RBTreeRightRotate(struct nodeTree *T, struct nodeTree *x) {
-  struct nodeTree *y;
-  y = x->Left;
-  x->Left = y->Right;
-  if(x->Right->key != NIL) {
-    y->Right->p = x;
-  }
-  y->p = x->p;
-  if(x->p->key == NIL) {
-    T = y;
-  } else {
-    if(x == x->p->Right) {
-      x->p->Right = y;
-    } else {
-      x->p->Left = y;
-    }
-  }
-  y->Right = x;
-  x->p = y;
-  return T;
-}
-//-----------------------------------------------------------------------------//
 struct nodeTree *RBTreeMinimum(struct nodeTree *x) {
   while (x->Left->key != NIL) {
     x = x->Left;
@@ -99,7 +102,7 @@ struct nodeTree *RBTreeMinimum(struct nodeTree *x) {
   return x;
 }
 //-----------------------------------------------------------------------------//
-struct nodeTree *RBTreeMaximum(struct nodeTree *x) {
+struct nodeTree *RBTreeMaximun(struct nodeTree *x) {
   while (x->Right->key != NIL) {
     x = x->Right;
   }
@@ -119,9 +122,9 @@ struct nodeTree *RBTreeSuccessor(struct nodeTree *x) {
   return y;
 }
 //-----------------------------------------------------------------------------//
-struct nodeTree *RBTreePredecessor(struct nodeTree *x) {
+struct nodeTree *RBTreePredeccessor(struct nodeTree *x) {
   if (x->Left->key != NIL) {
-    return RBTreeMaximum(x->Left);
+    return RBTreeMaximun(x->Left);
   }
   struct nodeTree *y;
   y = x->p;
@@ -142,7 +145,8 @@ struct nodeTree *RBTreeInsertFIXUP(struct nodeTree *T, struct nodeTree *z) {
         y->color = BLACK;
         z->p->p->color = RED;
         z = z->p->p;
-      } else {
+      }
+      else{
         if(z == z->p->Right) {
           z = z->p;
           T = RBTreeLeftRotate(T, z);
@@ -151,22 +155,24 @@ struct nodeTree *RBTreeInsertFIXUP(struct nodeTree *T, struct nodeTree *z) {
         z->p->p->color = RED;
         T = RBTreeRightRotate(T, z->p->p);
       }
-    } else {
-      y = z->p->p->Left;
-      if(y->color == RED) {
+    }
+    else{
+        y = z->p->p->Left;
+        if(y->color == RED) {
         z->p->color = BLACK;
         y->color = BLACK;
         z->p->p->color = RED;
         z = z->p->p;
-      } else {
-        if(z == z->p->Left) {
-          z = z->p;
-          T = RBTreeRightRotate(T, z);
         }
-        z->p->color = BLACK;
-        z->p->p->color = RED;
-        T = RBTreeLeftRotate(T, z->p->p);
-      }
+        else{
+            if(z == z->p->Left) {
+              z = z->p;
+              T = RBTreeRightRotate(T, z);
+            }
+            z->p->color = BLACK;
+            z->p->p->color = RED;
+            T = RBTreeLeftRotate(T, z->p->p);
+        }
     }
   }
   T->color = BLACK;
@@ -174,37 +180,43 @@ struct nodeTree *RBTreeInsertFIXUP(struct nodeTree *T, struct nodeTree *z) {
 }
 //-----------------------------------------------------------------------------//
 struct nodeTree *RBTreeInsert(struct nodeTree *T, int element) {
-	struct nodeTree *x, *y, *z;
-  z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
-  z->key = element;
-  z->color = RED;
-  z->Left = AssignNIL();
-  z->Left->p = z;
-  z->Right = AssignNIL();
-  z->Right->p = z;
-  z->freq = 1;
-  if(T->key != NIL) {
+    struct nodeTree *x, *y, *z;
+    z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
+    z->key = element;
+    z->frecuencia=1;
+    z->color = RED;
+    z->Left = AssignNIL();
+    z->Right = AssignNIL();
+    z->Right->p=z;
+    z->Left->p=z;
+    if(T->key != NIL) {
     y = T->p;
-  } else {
-    y = T;
-  }
-	x = T;
-	while(x->key != NIL) {
-		y = x;
-		if(z->key < x->key) {
-			x = x->Left;
-    } else {
-			x = x->Right;
     }
-	}
+    else{
+    y = T;
+    }
+    x = T;
+    while(x->key != NIL) {
+        y = x;
+        if(z->key < x->key) {
+            x = x->Left;
+    }
+    else{
+        x = x->Right;
+    }
+    }
 	z->p = y;
 	if(y->key == NIL) {
 		T = z;
-	} else {
-    free(x);
+	}
+	else{
+        //free(x); ///////////////////
 		if(z->key < y->key) {
+			free(y->Left);
 			y->Left = z;
-		} else {
+		}
+		else{
+			free(y->Right);
 			y->Right = z;
 		}
 	}
@@ -293,7 +305,6 @@ struct nodeTree *RBTreeDelete(struct nodeTree *T, struct nodeTree *z) {
 
 	if(y != z) {
 		z->key = y->key;
-    z->freq = y->freq;
   }
 
 	if(y->color == BLACK) {
@@ -310,14 +321,7 @@ struct nodeTree *RBTreeDelete(struct nodeTree *T, struct nodeTree *z) {
 	free(y);
 	return T;
 }
-
-struct nodeTree *DeleteAllTree(struct nodeTree *T) {
-  while(T->key != NIL) {
-    T = RBTreeDelete(T, T);
-  }
-  return T;
-}
-//-----------------------------------------------------------------------------//
+//---------------------------------------------------------------------------//
 int main() {
   int tests, size, query, temp, operation;
   struct nodeTree *T, *z, *pred, *succ;
@@ -331,7 +335,7 @@ int main() {
       if(z->key == NIL) {
         T = RBTreeInsert(T, temp);
       } else {
-        z->freq = z->freq + 1;
+        z->frecuencia = z->frecuencia + 1;
       }
     }
     scanf("%d", &query);
@@ -341,7 +345,7 @@ int main() {
         case 1:
           z = RBTreeSearch(T, temp);
           if (z->key != NIL) {
-            pred = RBTreePredecessor(z);
+            pred = RBTreePredeccessor(z);
             succ = RBTreeSuccessor(z);
             if (pred->key == NIL) {
               if (succ->key == NIL)
@@ -357,7 +361,7 @@ int main() {
           } else {
             T = RBTreeInsert(T, temp);
             z = RBTreeSearch(T, temp);
-            pred = RBTreePredecessor(z);
+            pred = RBTreePredeccessor(z);
             succ = RBTreeSuccessor(z);
             if (pred->key == NIL) {
               if (succ->key == NIL)
@@ -376,7 +380,7 @@ int main() {
         case 2:
           z = RBTreeSearch(T, temp);
           if(z->key != NIL) {
-            z->freq = z->freq + 1;
+            z->frecuencia = z->frecuencia + 1;
           } else {
             T = RBTreeInsert(T, temp);
           }
@@ -384,8 +388,8 @@ int main() {
         case 3:
           z = RBTreeSearch(T, temp);
           if(z->key != NIL) {
-            if(z->freq > 1)
-              z->freq = z->freq - 1;
+            if(z->frecuencia > 1)
+              z->frecuencia = z->frecuencia - 1;
           } else {
             T = RBTreeDelete(T, z);
           }
