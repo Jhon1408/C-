@@ -30,9 +30,9 @@ void RBInorderTreeWalk(struct RB_Trees *root) {
     {
         RBInorderTreeWalk(root->left);
         if(root->color == RED)
-            printf("[%d | RED] ", root->key);
+            printf("[%s | RED] ", root->key);
         else
-            printf("[%d | BLACK] ", root->key);
+            printf("[%s | BLACK] ", root->key);
         RBInorderTreeWalk(root->right);
     }
 }
@@ -290,7 +290,7 @@ struct RB_Trees *RB_Insert(struct RB_Trees *root, char element[]) {
         y = root;
 
 	x = root;
-	while(strcmp(x->key,NIL) == 0)
+	while(strcmp(x->key,NIL) != 0)
     {
 		y = x;
 		if(strcmp(z->key,x->key) < 0)
@@ -320,18 +320,18 @@ struct RB_Trees *RB_Insert(struct RB_Trees *root, char element[]) {
 //------------------------------------------------RB DELETE--------------------------------------------------------------------
 struct RB_Trees *RB_Delete(struct RB_Trees *root, struct RB_Trees *node) {
 	struct RB_Trees *x, *y;
-	if(((node->left->key) == NIL) || ((node->right->key) == NIL))
+	if((strcmp((node->left->key),NIL) == 0) || (strcmp((node->right->key),NIL) == 0))
 		y = node;
 	else
 		y = RB_TreeSuccessor(node);
 
-	if((y->left->key) != NIL)
+	if(strcmp((y->left->key),NIL) != 0)
 		x = y->left;
     else
 		x = y->right;
 
 	x->parent = y->parent;
-	if((y->parent->key) == NIL)
+	if(strcmp((y->parent->key),NIL) == 0)
 		root = x;
 	else
     {
@@ -342,8 +342,7 @@ struct RB_Trees *RB_Delete(struct RB_Trees *root, struct RB_Trees *node) {
 	}
 
 	if(y != node) {
-		node->key = y->key;
-        node->frecuency = y->frecuency;
+		strcpy(node->key,y->key);
         //copy all information  camps
     }
 
@@ -362,7 +361,13 @@ struct RB_Trees *RB_Delete(struct RB_Trees *root, struct RB_Trees *node) {
 }
 //-----------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------
-int main()
-{
-
+int main() {
+  struct RB_Trees *T = Assing_Nil();
+  char words[32];
+  while(scanf("%s",words) && (strcmp(words,".") != 0)) {
+    T = RB_Insert(T,words);
+  }
+  RBInorderTreeWalk(T);
+  printf("\n");
+  return 0;
 }
