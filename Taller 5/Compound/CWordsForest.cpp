@@ -99,7 +99,7 @@ struct RB_Trees *RB_RightRotate(struct RB_Trees *root, struct RB_Trees *node) {
 //-----------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------MINIMUN & MAXIMUN-----------------------------------------------------
 //-------------------------------------------------------MINIMUN---------------------------------------------------------------
-struct RB_Trees *RB_Minimun(struct RB_Trees *root) {
+struct RB_Trees *RB_TreeMinimun(struct RB_Trees *root) {
     while(strcmp((root->left->key),NIL) != 0)
     {
         root = root->left;
@@ -121,7 +121,7 @@ struct RB_Trees *RB_Maximun(struct RB_Trees *root) {
 struct RB_Trees *RB_TreeSuccessor(struct RB_Trees *node) {
     struct RB_Trees *y;
     if(strcmp((node->right->key),NIL) != 0)
-        return RB_Minimun(node->right);
+        return RB_TreeMinimun(node->right);
     y = node->parent;
     while((strcmp((y->key),NIL) != 0) && (node == (y->right)))
     {
@@ -362,11 +362,15 @@ struct RB_Trees *RB_Delete(struct RB_Trees *root, struct RB_Trees *node) {
 //-----------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------
 int main() {
-  struct RB_Trees *T = Assing_Nil();
+  struct RB_Trees *T = Assing_Nil(), *z;
   char words[32];
   while(scanf("%s",words) && (strcmp(words,".") != 0)) {
-    T = RB_Insert(T,words);
+    z = RB_IterativeTreeSearch(T,words);
+    if(strcmp(z->key,NIL) == 0) {
+      T = RB_Insert(T,words);
+    }
   }
+  z = RB_TreeMinimun(T);
   RBInorderTreeWalk(T);
   printf("\n");
   return 0;
