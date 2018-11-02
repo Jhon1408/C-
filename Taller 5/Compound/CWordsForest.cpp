@@ -362,7 +362,9 @@ struct RB_Trees *RB_Delete(struct RB_Trees *root, struct RB_Trees *node) {
 //-----------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------
 int main() {
-  struct RB_Trees *T = Assing_Nil(), *z;
+  struct RB_Trees *T = Assing_Nil(), *x, *y, *z;
+  char word1[32], word2[32];
+  int i, j, k, len;
   char words[32];
   while(scanf("%s",words) && (strcmp(words,".") != 0)) {
     z = RB_IterativeTreeSearch(T,words);
@@ -370,8 +372,25 @@ int main() {
       T = RB_Insert(T,words);
     }
   }
-  z = RB_TreeMinimun(T);
-  RBInorderTreeWalk(T);
-  printf("\n");
+  scanf("%s", words);
+  z = RB_IterativeTreeSearch(T,words);
+  len = strlen(z->key);
+  for(i = 1; i < len; i++) {
+    for(j = 0; j < i; j++) {
+      word1[j] = z->key[j];
+    }
+    word1[j] = '\0';
+    for(k = 0, j = i; j < len; j++, k++) {
+      word2[k] = z->key[j];
+    }
+    word2[k] = '\0';
+    y = RB_IterativeTreeSearch(T, word1);
+    x = RB_IterativeTreeSearch(T, word2);
+    if(strcmp(y->key,NIL) != 0) {
+      if(strcmp(x->key,NIL) != 0) {
+        printf("%s\n",z->key);
+      }
+    }
+  }
   return 0;
 }
