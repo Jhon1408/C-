@@ -1,15 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #define RED 1
 #define BLACK 0
-#define NIL 2147483647
+#define NIL "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
 
 //-----------------------------------------------------------------------------//
 struct nodeTree {
-  int key;
+  char key[32];
   int color;
-  int freq;
   struct nodeTree *Left;
   struct nodeTree *Right;
   struct nodeTree *p;
@@ -18,7 +18,7 @@ struct nodeTree {
 struct nodeTree *AssignNIL() {
   struct nodeTree *z;
   z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
-  z->key = NIL;
+  strcpy(z->key, NIL);
   z->color = BLACK;
   z->p = NULL;
   z->Left = NULL;
@@ -27,21 +27,21 @@ struct nodeTree *AssignNIL() {
 }
 //-----------------------------------------------------------------------------//
 void RBInorderTreeWalk(struct nodeTree *x) {
-  if(x->key != NIL) {
+  if(strcmp(x->key,NIL) != 0) {
     RBInorderTreeWalk(x->Left);
     if(x->color == RED)
-      printf("[%d|R] ", x->key);
+      printf("[%s|R] ", x->key);
     else
-      printf("[%d|B] ", x->key);
+      printf("[%s|B] ", x->key);
     RBInorderTreeWalk(x->Right);
   }
 }
 //-----------------------------------------------------------------------------//
-struct nodeTree *RBTreeSearch(struct nodeTree *x, int k) {
-  if ((x->key == NIL) || (k == x->key)) {
+struct nodeTree *RBTreeSearch(struct nodeTree *x, char k[]) {
+  if ((strcmp(x->key,NIL) == 0) || (strcmp(k, x->key) == 0)) {
     return x;
   }
-  if(k < x->key) {
+  if(strcmp(k,x->key) < 0) {
     return RBTreeSearch(x->Left,k);
   } else {
     return RBTreeSearch(x->Right,k);
@@ -52,11 +52,11 @@ struct nodeTree *RBTreeLeftRotate(struct nodeTree *T, struct nodeTree *x) {
   struct nodeTree *y;
   y = x->Right;
   x->Right = y->Left;
-  if(x->Left->key != NIL) {
+  if(strcmp(y->Left->key,NIL) != 0) {
     y->Left->p = x;
   }
   y->p = x->p;
-  if(x->p->key == NIL) {
+  if(strcmp(x->p->key,NIL) == 0) {
     T = y;
   } else {
     if(x == x->p->Left) {
@@ -74,11 +74,11 @@ struct nodeTree *RBTreeRightRotate(struct nodeTree *T, struct nodeTree *x) {
   struct nodeTree *y;
   y = x->Left;
   x->Left = y->Right;
-  if(x->Right->key != NIL) {
+  if(strcmp(y->Right->key,NIL) != 0) {
     y->Right->p = x;
   }
   y->p = x->p;
-  if(x->p->key == NIL) {
+  if(strcmp(x->p->key,NIL) == 0) {
     T = y;
   } else {
     if(x == x->p->Right) {
@@ -93,26 +93,26 @@ struct nodeTree *RBTreeRightRotate(struct nodeTree *T, struct nodeTree *x) {
 }
 //-----------------------------------------------------------------------------//
 struct nodeTree *RBTreeMinimum(struct nodeTree *x) {
-  while (x->Left->key != NIL) {
+  while (strcmp(x->Left->key,NIL) != 0) {
     x = x->Left;
   }
   return x;
 }
 //-----------------------------------------------------------------------------//
 struct nodeTree *RBTreeMaximum(struct nodeTree *x) {
-  while (x->Right->key != NIL) {
+  while (strcmp(x->Right->key,NIL) != 0) {
     x = x->Right;
   }
   return x;
 }
 //-----------------------------------------------------------------------------//
 struct nodeTree *RBTreeSuccessor(struct nodeTree *x) {
-  if (x->Right->key != NIL) {
+  struct nodeTree *y;
+  if (strcmp(x->Right->key,NIL) != 0) {
     return RBTreeMinimum(x->Right);
   }
-  struct nodeTree *y;
   y = x->p;
-  while ((y->key != NIL) && (x == y->Right)) {
+  while ((strcmp(y->key,NIL) != 0) && (x == y->Right)) {
     x = y;
     y = y->p;
   }
@@ -120,12 +120,12 @@ struct nodeTree *RBTreeSuccessor(struct nodeTree *x) {
 }
 //-----------------------------------------------------------------------------//
 struct nodeTree *RBTreePredecessor(struct nodeTree *x) {
-  if (x->Left->key != NIL) {
+  struct nodeTree *y;
+  if (strcmp(x->Left->key,NIL) != 0) {
     return RBTreeMaximum(x->Left);
   }
-  struct nodeTree *y;
   y = x->p;
-  while ((y->key != NIL) && (x == y->Left)) {
+  while ((strcmp(y->key,NIL) != 0) && (x == y->Left)) {
     x = y;
     y = y->p;
   }
@@ -173,23 +173,22 @@ struct nodeTree *RBTreeInsertFIXUP(struct nodeTree *T, struct nodeTree *z) {
   return T;
 }
 //-----------------------------------------------------------------------------//
-struct nodeTree *RBTreeInsert(struct nodeTree *T, int element) {
-	struct nodeTree *x, *y, *z;
+struct nodeTree *RBTreeInsert(struct nodeTree *T, char element[]) {
+  struct nodeTree *x, *y, *z;
   z = (struct nodeTree *) malloc(sizeof(struct nodeTree));
-  z->key = element;
+  strcpy(z->key,element);
   z->color = RED;
   z->Left = AssignNIL();
   z->Left->p = z;
   z->Right = AssignNIL();
   z->Right->p = z;
-  z->freq = 1;
-  if(T->key != NIL) {
+  if(strcmp(T->key,NIL) != 0) {
     y = T->p;
   } else {
     y = T;
   }
 	x = T;
-	while(x->key != NIL) {
+	while(strcmp(x->key, NIL) != 0) {
 		y = x;
 		if(z->key < x->key) {
 			x = x->Left;
@@ -198,11 +197,11 @@ struct nodeTree *RBTreeInsert(struct nodeTree *T, int element) {
     }
 	}
 	z->p = y;
-	if(y->key == NIL) {
+	if(strcmp(y->key,NIL) == 0) {
 		T = z;
 	} else {
     free(x);
-		if(z->key < y->key) {
+		if(strcmp(z->key,y->key) < 0) {
 			y->Left = z;
 		} else {
 			y->Right = z;
@@ -270,18 +269,18 @@ struct nodeTree *RBDeleteFIXUP(struct nodeTree *T, struct nodeTree *x) {
 //-----------------------------------------------------------------------------//
 struct nodeTree *RBTreeDelete(struct nodeTree *T, struct nodeTree *z) {
 	struct nodeTree *x, *y;
-	if((z->Left->key == NIL) || (z->Right->key == NIL)) {
+	if((strcmp(z->Left->key,NIL) == 0) || (strcmp(z->Right->key,NIL) == 0)) {
 		y = z;
 	} else {
 		y = RBTreeSuccessor(z);
   }
-	if(y->Left->key != NIL) {
+	if(strcmp(y->Left->key,NIL) != 0) {
 		x = y->Left;
 	} else {
 		x = y->Right;
   }
 	x->p = y->p;
-	if(y->p->key == NIL) {
+	if(strcmp(y->p->key,NIL) == 0) {
 		T = x;
 	} else {
 		if(y == y->p->Left) {
@@ -292,8 +291,7 @@ struct nodeTree *RBTreeDelete(struct nodeTree *T, struct nodeTree *z) {
 	}
 
 	if(y != z) {
-		z->key = y->key;
-    z->freq = y->freq;
+		strcpy(z->key,y->key);
   }
 
 	if(y->color == BLACK) {
@@ -312,90 +310,46 @@ struct nodeTree *RBTreeDelete(struct nodeTree *T, struct nodeTree *z) {
 }
 
 struct nodeTree *DeleteAllTree(struct nodeTree *T) {
-  while(T->key != NIL) {
+  while(strcmp(T->key,NIL) != 0) {
     T = RBTreeDelete(T, T);
   }
   return T;
 }
 //-----------------------------------------------------------------------------//
-int main() {
-  int tests, size, query, temp, operation;
-  struct nodeTree *T, *z, *pred, *succ;
-  scanf("%d", &tests);
-  for(int i = 1; i <= tests; i++) {
-    T = AssignNIL();
-    scanf("%d", &size);
-    for(int j = 1; j <= size; j++) {
-      scanf("%d", &temp);
-      z = RBTreeSearch(T, temp);
-      if(z->key == NIL) {
-        T = RBTreeInsert(T, temp);
-      } else {
-        z->freq = z->freq + 1;
-      }
+/*struct nodeTree *SearchInAll(struct nodeTree *T, struct nodeTree *x, char element[]) {
+  char temp[64];
+  struct nodeTree *z;
+  if(strcmp(x->key,NIL) != 0) {
+    x = SearchInAll(T, x->Left, element);
+    strcpy(temp, element);
+    strcat(temp, x->key);
+    z = RBTreeSearch(T, temp);
+    if((strcmp(z->key,NIL) != 0) && (strcmp(z->key,element) == 0)) {
+      return z;
     }
-    scanf("%d", &query);
-    for(int i = 1; i <= query; i++) {
-      scanf("%d %d", &operation, &temp);
-      switch(operation) {
-        case 1:
-          z = RBTreeSearch(T, temp);
-          if (z->key != NIL) {
-            pred = RBTreePredecessor(z);
-            succ = RBTreeSuccessor(z);
-            if (pred->key == NIL) {
-              if (succ->key == NIL)
-                printf("-1 100001\n");
-              else
-                printf("-1 %d\n", succ->key);
-            } else {
-              if (succ->key == NIL)
-                printf("%d 100001\n", pred->key);
-              else
-                printf("%d %d\n", pred->key, succ->key);
-            }
-          } else {
-            T = RBTreeInsert(T, temp);
-            z = RBTreeSearch(T, temp);
-            pred = RBTreePredecessor(z);
-            succ = RBTreeSuccessor(z);
-            if (pred->key == NIL) {
-              if (succ->key == NIL)
-                printf("-1 100001\n");
-              else
-                printf("-1 %d\n", succ->key);
-            } else {
-              if (succ->key == NIL)
-                printf("%d 100001\n", pred->key);
-              else
-                printf("%d %d\n", pred->key, succ->key);
-            }
-            T = RBTreeDelete(T, z);
-          }
-          break;
-        case 2:
-          z = RBTreeSearch(T, temp);
-          if(z->key != NIL) {
-            z->freq = z->freq + 1;
-          } else {
-            T = RBTreeInsert(T, temp);
-          }
-          break;
-        case 3:
-          z = RBTreeSearch(T, temp);
-          if(z->key != NIL) {
-            if(z->freq > 1)
-              z->freq = z->freq - 1;
-          } else {
-            T = RBTreeDelete(T, z);
-          }
-          break;
-        default:
-          break;
-      }
+    strcpy(temp, x->key);
+    strcat(temp, element);
+    z = RBTreeSearch(T, temp);
+    if((strcmp(z->key,NIL) != 0) && (strcmp(z->key,element) == 0)) {
+      return z;
     }
-    //T = DeleteAllTree(T);
-    T = AssignNIL();
+    x = SearchInAll(T, x->Right, element);
   }
+  return x;
+}*/
+
+int main() {
+  struct nodeTree *T, *z;
+  char temp[32], concat[64];
+  T = AssignNIL();
+  while(scanf("%s",temp) != EOF && (strcmp(temp,".") != 0)) {
+    if(strcmp(T->key,NIL) == 0) {
+      T = RBTreeInsert(T, temp);
+    } else {
+      T = RBTreeInsert(T, temp);
+    }
+  }
+  RBInorderTreeWalk(T);
+  printf("\n");
   return 0;
 }
