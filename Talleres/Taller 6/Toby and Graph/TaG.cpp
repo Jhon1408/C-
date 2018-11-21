@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#define MAXV 1005
+#define MAXV 10005
 #define WHITE 0
 #define GRAY 1
 #define BLACK 2
 #define NIL -1
 #define myInfinite 2147483647
+int cont;
 
 struct edge
 {
@@ -151,42 +152,60 @@ void Path(int u, int pi[])
   }
 }
 
-void Solver(struct graph *G, int source)
-{
-  int color[MAXV], d[MAXV], pi[MAXV], f[MAXV], idVertex;
-  BFS(G, source, color, d, pi);
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-    printf("d[%d]: %d\n", idVertex, d[idVertex]);
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-    printf("pi[%d]: %d\n", idVertex, pi[idVertex]);
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-  {
-    if (color[idVertex] == WHITE)
-      printf("color[%d]: WHITE\n", idVertex);
-    if (color[idVertex] == GRAY)
-      printf("color[%d]: GRAY\n", idVertex);
-    if (color[idVertex] == BLACK)
-      printf("color[%d]: BLACK\n", idVertex);
+int Gauss() {
+  int k, n;
+  if(cont < 2) {
+    return 0;
   }
+  n = cont - 1;
+  k = ((n*(n+1))/2);
+  return k;
+}
 
-  printf("\n");
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-  {
-    Path(idVertex, pi);
+void Solver(struct graph *G, int source, int SourceEdges[])
+{
+  int color[MAXV], d[MAXV], pi[MAXV], f[MAXV], i, idVertex;
+  if(SourceEdges[source] == 0) {
+    cont++;
+    BFS(G, source, color, d, pi);
+    /*
+    for (idVertex = 1; idVertex <= G->n_vertex; idVertex++) {
+      if (color[idVertex] == WHITE)
+        printf("color[%d]: WHITE\n", idVertex);
+      if (color[idVertex] == GRAY)
+        printf("color[%d]: GRAY\n", idVertex);
+      if (color[idVertex] == BLACK)
+        printf("color[%d]: BLACK\n", idVertex);
+    }
     printf("\n");
+    */
+    for(i = 1; i <= G->n_vertex; i++) {
+      if(color[i] == BLACK) {
+        SourceEdges[i] = 1;
+      }
+    }
   }
+  
 }
 
 int main()
 {
-  int vertexes, edges, a, b, i, v, u, T;
+  int vertexes, edges, a, b, i, v, u, SourceEdges[MAXV], T;
   struct graph *G;
   struct edge *tempEdge;
   scanf("%d", &T);
-  for(i = 1; i <= T; i++) {
+  for(int j = 1; j <= T; j++) {
     scanf("%d %d", &vertexes, &edges);
     G = ReadGraph(vertexes, edges);
-    PrintGraph(G);
+    cont = 0;
+    for(i = 1; i <= G->n_vertex; i++) {
+      SourceEdges[i] = 0;
+    }
+
+    for(i = 1; i <= G->n_vertex; i++) {
+      Solver(G,i,SourceEdges);
+    }
+    printf("%d\n", Gauss());
     G = DeleteGraph(G);
   }
   return 0;
