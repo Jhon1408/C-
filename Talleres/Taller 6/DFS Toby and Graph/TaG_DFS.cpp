@@ -8,7 +8,9 @@
 #define NIL -1
 #define myInfinite 2147483647
 int cont;
-
+/*
+int time = 0;
+*/
 struct edge
 {
   int vertex;
@@ -29,7 +31,7 @@ struct graph *ReadGraph(int vertexes, int edges)
   struct graph *G;
   struct edge *tempEdge;
 
-  G = (struct graph *) malloc(sizeof(struct graph));
+  G = (struct graph *)malloc(sizeof(struct graph));
 
   G->n_vertex = vertexes;
   G->n_edges = edges;
@@ -102,44 +104,6 @@ struct graph *DeleteGraph(struct graph *G)
   return G;
 }
 
-void BFS(struct graph *G, int s, int color[], int d[], int pi[])
-{
-  struct edge *tempEdge;
-  int idVertex, u, v, Queue[MAXV], head = 1, tail = 1;
-  /*for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-  {
-    color[idVertex] = WHITE;
-    d[idVertex] = myInfinite;
-    pi[idVertex] = NIL;
-  }*/
-
-  color[s] = GRAY;
-  d[s] = 0;
-  Queue[tail] = s;
-  tail++;
-
-  while (head < tail)
-  {
-    u = Queue[head];
-    head++;
-    tempEdge = G->Adj[u];
-    while (tempEdge != NULL)
-    {
-      v = tempEdge->vertex;
-      if (color[v] == WHITE)
-      {
-        color[v] = GRAY;
-        d[v] = d[u] + 1;
-        pi[v] = u;
-        Queue[tail] = v;
-        tail++;
-      }
-      tempEdge = tempEdge->next;
-    }
-    color[u] = BLACK;
-  }
-}
-
 void Path(int u, int pi[])
 {
   if (pi[u] == NIL)
@@ -148,6 +112,89 @@ void Path(int u, int pi[])
   {
     Path(pi[u], pi);
     printf(" -> %d", u);
+  }
+}
+
+void DFS_Visit(int u, struct graph *G, int color[], int d[],
+               int f[], int pi[], int *time)
+{
+  struct edge *tempEdge;
+  int v;
+
+  color[u] = GRAY;
+  *time = *time + 1;
+  d[u] = *time;
+  tempEdge = G->Adj[u];
+
+  while (tempEdge != NULL)
+  {
+    v = tempEdge->vertex;
+    if (color[v] == WHITE)
+    {
+      pi[v] = u;
+      DFS_Visit(v, G, color, d, f, pi, &(*time));
+    }
+    tempEdge = tempEdge->next;
+  }
+  color[u] = BLACK;
+  *time = *time + 1;
+  f[u] = *time;
+}
+
+/*
+void DFS_Visit(int u, struct graph *G, int color[], int d[],
+               int f[], int pi[])
+{
+    struct edge *tempEdge;
+    int v;
+
+    color[u] = GRAY;
+    time = time + 1;
+    d[u] = time;
+    tempEdge = G->Adj[u];
+
+    while(tempEdge != NULL)
+    {
+        v = tempEdge->vertex;
+        if(color[v] == WHITE)
+        {
+            pi[v] = u;
+            DFS_Visit(v, G, color, d, f, pi);
+        }
+        tempEdge = tempEdge->next;
+    }
+    color[u] = BLACK;
+    time = time + 1;
+    f[u] = time;
+}
+*/
+
+void DFS(struct graph *G, int color[], int d[], int f[], int pi[])
+{
+  int time, idVertex;
+
+  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
+  {
+    color[idVertex] = WHITE;
+    pi[idVertex] = NIL;
+  }
+  time = 0;
+
+  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
+  {
+    if (color[idVertex] == WHITE)
+      DFS_Visit(idVertex, G, color, d, f, pi, &time);
+  }
+}
+
+void Solver(struct graph *G)
+{
+  int color[MAXV], d[MAXV], f[MAXV], pi[MAXV], idVertex;
+  DFS(G, color, d, f, pi);
+  for(idVertex = 1; idVertex <= G->n_vertex; idVertex++) {
+    if(pi[idVertex] == NIL) {
+      cont++;
+    }
   }
 }
 
@@ -161,42 +208,14 @@ int Gauss() {
   return k;
 }
 
-void Solver(struct graph *G)
-{
-  int color[MAXV], d[MAXV], pi[MAXV], f[MAXV], i, idVertex;
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-  {
-    color[idVertex] = WHITE;
-    d[idVertex] = myInfinite;
-    pi[idVertex] = NIL;
-  }
-  for(i = 1; i <= G->n_vertex; i++) {
-    if(color[i] == WHITE) {
-      BFS(G, i, color, d, pi);
-      cont++;
-    }
-  }
-  
-    /*
-    for (idVertex = 1; idVertex <= G->n_vertex; idVertex++) {
-      if (color[idVertex] == WHITE)
-        printf("color[%d]: WHITE\n", idVertex);
-      if (color[idVertex] == GRAY)
-        printf("color[%d]: GRAY\n", idVertex);
-      if (color[idVertex] == BLACK)
-        printf("color[%d]: BLACK\n", idVertex);
-    }
-    printf("\n");
-    */
-}
-
 int main()
 {
   int vertexes, edges, a, b, i, v, u, T;
   struct graph *G;
   struct edge *tempEdge;
   scanf("%d", &T);
-  for(int j = 1; j <= T; j++) {
+  for (int j = 1; j <= T; j++)
+  {
     scanf("%d %d", &vertexes, &edges);
     G = ReadGraph(vertexes, edges);
     cont = 0;
