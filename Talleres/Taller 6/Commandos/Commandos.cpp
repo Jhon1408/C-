@@ -41,7 +41,6 @@ struct graph *ReadGraph(int vertexes, int edges)
   for (idEdge = 1; idEdge <= G->n_edges; idEdge++)
   {
     scanf("%d %d", &v, &u);
-
     tempEdge = (struct edge *)malloc(sizeof(struct edge));
     tempEdge->vertex = u;
     tempEdge->next = G->Adj[v];
@@ -140,57 +139,49 @@ void BFS(struct graph *G, int s, int color[], int d[], int pi[])
   }
 }
 
-void Path(int u, int pi[])
+void Path(int u, int pi[], int cont)
 {
   if (pi[u] == NIL)
     printf("%d", u);
   else
   {
-    Path(pi[u], pi);
+    Path(pi[u], pi, cont);
     printf(" -> %d", u);
   }
 }
 
-void Solver(struct graph *G, int source)
+int Solver(struct graph *G, int source, int dest)
 {
-  int color[MAXV], d[MAXV], pi[MAXV], f[MAXV], idVertex;
-  BFS(G, source, color, d, pi);
-  //DFS(G, color, pi, d, f);
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-    printf("d[%d]: %d\n", idVertex, d[idVertex]);
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-    printf("pi[%d]: %d\n", idVertex, pi[idVertex]);
+  int color[MAXV], d1[MAXV], d2[MAXV], pi[MAXV], f[MAXV], idVertex, max, sum;
+  BFS(G, source, color, d1, pi);
+  BFS(G, dest, color, d2, pi);
+  max = 0;
+  sum = 0;
   for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
   {
-    if (color[idVertex] == WHITE)
-      printf("color[%d]: WHITE\n", idVertex);
-    if (color[idVertex] == GRAY)
-      printf("color[%d]: GRAY\n", idVertex);
-    if (color[idVertex] == BLACK)
-      printf("color[%d]: BLACK\n", idVertex);
+    sum = (d1[idVertex] + d2[idVertex]);
+		if((sum > max) && (sum < myInfinite)) {
+      max = d1[idVertex] + d2[idVertex];
+    }
+    sum = 0;
   }
-
-  printf("\n");
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-  {
-    Path(idVertex, pi);
-    printf("\n");
-  }
+  return max;
 }
 
 int main()
 {
-  int vertexes, edges, idVertex, idEdge, v, u, source;
+  int idVertex, idEdge, s, d, TestCases, Buildings, Roads;
   struct graph *G;
   struct edge *tempEdge;
-
-  while (scanf("%d %d %d", &vertexes, &edges, &source) != EOF)
-  {
-    G = ReadGraph(vertexes, edges);
-    PrintGraph(G);
-    Solver(G, source);
-    G = DeleteGraph(G);
-    PrintGraph(G);
-  }
+	
+	scanf("%d", &TestCases);
+	for(int i = 1; i <= TestCases; i++)
+	{
+		scanf("%d %d", &Roads, &Buildings);
+		G = ReadGraph(Roads, Buildings);
+    scanf("%d %d", &s, &d);
+		printf("Case %d: %d\n", i, Solver(G, s, d));
+		G = DeleteGraph(G);
+	}
   return 0;
 }

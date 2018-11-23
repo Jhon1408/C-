@@ -41,7 +41,6 @@ struct graph *ReadGraph(int vertexes, int edges)
   for (idEdge = 1; idEdge <= G->n_edges; idEdge++)
   {
     scanf("%d %d", &v, &u);
-
     tempEdge = (struct edge *)malloc(sizeof(struct edge));
     tempEdge->vertex = u;
     tempEdge->next = G->Adj[v];
@@ -151,31 +150,19 @@ void Path(int u, int pi[])
   }
 }
 
-void Solver(struct graph *G, int source)
+int Solver(struct graph *G, int source1, int source2)
 {
-  int color[MAXV], d[MAXV], pi[MAXV], f[MAXV], idVertex;
-  BFS(G, source, color, d, pi);
-  //DFS(G, color, pi, d, f);
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-    printf("d[%d]: %d\n", idVertex, d[idVertex]);
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-    printf("pi[%d]: %d\n", idVertex, pi[idVertex]);
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-  {
-    if (color[idVertex] == WHITE)
-      printf("color[%d]: WHITE\n", idVertex);
-    if (color[idVertex] == GRAY)
-      printf("color[%d]: GRAY\n", idVertex);
-    if (color[idVertex] == BLACK)
-      printf("color[%d]: BLACK\n", idVertex);
+  int color1[MAXV], d1[MAXV], pi1[MAXV], idVertex;
+  int color2[MAXV], d2[MAXV], pi2[MAXV];
+  BFS(G, source1, color1, d1, pi1);
+  BFS(G, source2, color2, d2, pi2);
+  int max = 0;
+  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++){
+    if((d1[idVertex] + d2[idVertex]) > max) {
+      max = d1[idVertex] + d2[idVertex];
+    }
   }
-
-  printf("\n");
-  for (idVertex = 1; idVertex <= G->n_vertex; idVertex++)
-  {
-    Path(idVertex, pi);
-    printf("\n");
-  }
+  return max;
 }
 
 int main()
@@ -183,14 +170,22 @@ int main()
   int vertexes, edges, idVertex, idEdge, v, u, source;
   struct graph *G;
   struct edge *tempEdge;
+  int cases;
+  scanf("%d", &cases);
+  int a=1;
+  int resultado;
+  int s,d;
 
-  while (scanf("%d %d %d", &vertexes, &edges, &source) != EOF)
+  while (a <= cases)
   {
+    scanf("%d %d", &vertexes, &edges);
     G = ReadGraph(vertexes, edges);
-    PrintGraph(G);
-    Solver(G, source);
+    scanf("%d %d", &s, &d);
+    resultado = Solver(G, s, d);
+    printf("Case %d: %d\n", a, resultado);
+    resultado = 0;
     G = DeleteGraph(G);
-    PrintGraph(G);
+    a++;
   }
   return 0;
 }
